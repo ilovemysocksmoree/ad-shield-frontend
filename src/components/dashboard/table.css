@@ -1,0 +1,221 @@
+/* src/components/dashboard/dashboard-tables.css */
+
+/* === Base Table Container === */
+.data-table-container {
+    background-color: #ffffff; /* bg-white */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); /* shadow */
+    overflow: hidden;
+    border-radius: 0.5rem; /* sm:rounded-lg */
+    margin-bottom: 1.5rem; /* Add some space below the table */
+  }
+  
+  /* === Table Header Section === */
+  .data-table-header {
+    padding: 1.25rem 1rem; /* py-5 px-4 */
+    border-bottom: 1px solid #e5e7eb; /* Add a subtle border if needed */
+  }
+  /* Responsive Padding for Header */
+  @media (min-width: 640px) {
+    .data-table-header {
+      padding-left: 1.5rem; /* sm:px-6 */
+      padding-right: 1.5rem;
+    }
+  }
+  
+  /* Specific Header Styles */
+  .data-table-header--roles {
+    background: linear-gradient(to right, #9333ea, #4f46e5); /* purple-600 to indigo-600 */
+    color: #ffffff;
+  }
+  .data-table-header--users {
+    background: linear-gradient(to right, #0891b2, #2563eb); /* cyan-600 to blue-600 */
+    color: #ffffff;
+  }
+
+  .data-table-header--pcap{
+    background: linear-gradient(to right, #79ea33, #46e551); 
+    color: #ffffff;
+  }
+  
+  .data-table-header__title {
+    font-size: 1.125rem; /* text-lg */
+    line-height: 1.5rem; /* leading-6 */
+    font-weight: 500; /* font-medium */
+  }
+  
+  .data-table-header__description {
+    margin-top: 0.25rem; /* mt-1 */
+    max-width: 42rem; /* max-w-2xl */
+    font-size: 0.875rem; /* text-sm */
+    opacity: 0.9; /* Similar to text-purple-100 / text-blue-100 */
+  }
+  .data-table-header--roles .data-table-header__description {
+    color: #e9d5ff; /* text-purple-100 */
+  }
+  .data-table-header--users .data-table-header__description {
+    color: #dbeafe; /* text-blue-100 */
+  }
+  
+  
+  /* === Table Structure === */
+  .data-table-wrapper {
+    overflow-x: auto; /* overflow-x-auto */
+  }
+  
+  .data-table {
+    min-width: 100%; /* min-w-full */
+    border-collapse: collapse; /* Use collapse for cleaner borders */
+    /* divide-y is handled by row bottom borders */
+  }
+  
+  /* === Table Header (thead) === */
+  .data-table thead {
+    background-color: #f9fafb; /* bg-gray-50 */
+  }
+  
+  .data-table__header-cell {
+    padding: 0.75rem 1.5rem; /* px-6 py-3 */
+    text-align: left; /* text-left */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500; /* font-medium */
+    color: #6b7280; /* text-gray-500 */
+    text-transform: uppercase; /* uppercase */
+    letter-spacing: 0.05em; /* tracking-wider */
+    white-space: nowrap;
+  }
+  
+  /* === Table Body (tbody) === */
+  .data-table tbody {
+    background-color: #ffffff; /* bg-white */
+  }
+  
+  .data-table__row {
+    border-bottom: 1px solid #e5e7eb; /* divide-gray-200 */
+    transition: background-color 0.15s ease-in-out;
+  }
+  .data-table__row:last-child {
+    border-bottom: none; /* No border for the last row */
+  }
+  
+  .data-table tbody tr:hover {
+    background-color: #f9fafb; /* hover:bg-gray-50 */
+  }
+  
+  /* === Table Data Cells (td) === */
+  .data-table__cell {
+    padding: 1rem 1.5rem; /* px-6 py-4 */
+    vertical-align: middle; /* Align content vertically */
+    font-size: 0.875rem; /* text-sm */
+    color: #1f2937; /* Default text color */
+  }
+  
+  .data-table__cell--nowrap {
+    white-space: nowrap; /* whitespace-nowrap */
+  }
+  
+  .data-table__cell--muted {
+    color: #6b7280; /* text-gray-500 */
+  }
+  
+  .data-table__cell--empty {
+    text-align: center; /* text-center */
+    color: #6b7280; /* text-gray-500 */
+    font-style: italic;
+  }
+  
+  /* === Cell Specific Content === */
+  
+  /* Text variations within cells */
+  .cell-text-main {
+    font-weight: 500; /* font-medium */
+    color: #111827; /* text-gray-900 */
+  }
+  .cell-text-subtle {
+    font-size: 0.75rem; /* text-xs */
+    color: #6b7280; /* text-gray-500 */
+  }
+  
+  /* Badges / Pills */
+  .data-table-badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem; /* gap-1 */
+  }
+  
+  .data-table-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem; /* Roughly px-2 py-1 */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500; /* font-medium */
+    border-radius: 9999px; /* rounded-full */
+    line-height: 1; /* Ensure consistent height */
+  }
+  
+  .data-table-badge--permission {
+    background-color: #e0e7ff; /* bg-indigo-100 */
+    color: #3730a3; /* text-indigo-800 */
+  }
+  
+  .data-table-badge--role {
+    background-color: #dcfce7; /* bg-green-100 */
+    color: #166534; /* text-green-800 */
+  }
+  
+  /* User Info specific */
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    flex-shrink: 0; /* flex-shrink-0 */
+    height: 2.5rem; /* h-10 */
+    width: 2.5rem; /* w-10 */
+    border-radius: 50%; /* rounded-full */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #60a5fa, #2563eb); /* from-blue-400 to-blue-600 */
+  }
+  
+  .user-avatar__initials {
+    color: #ffffff; /* text-white */
+    font-weight: 500; /* font-medium */
+    font-size: 0.875rem; /* text-sm */
+  }
+  
+  .user-details {
+    margin-left: 1rem; /* ml-4 */
+  }
+
+.data-table-header--history {
+  background: linear-gradient(to right, #f97316, #ea580c); /* orange-500 to orange-600 */
+  color: #ffffff;
+}
+
+.data-table-header--history .data-table-header__description {
+  color: #ffedd5; /* orange-100 */
+}
+
+
+.status-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: inline-block;
+}
+.status-badge--success {
+    background-color: #dcfce7; /* green-100 */
+    color: #166534; /* green-800 */
+}
+.status-badge--failed {
+    background-color: #fee2e2; /* red-100 */
+    color: #991b1b; /* red-800 */
+}
+.status-badge--pending {
+    background-color: #ffedd5; /* orange-100 */
+    color: #9a3412; /* orange-800 */
+}
+/* Add more statuses if needed */

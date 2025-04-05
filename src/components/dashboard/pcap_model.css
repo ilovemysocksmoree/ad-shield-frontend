@@ -1,0 +1,235 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top */
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 550px;
+  position: relative;
+  animation: slideInUp 0.4s ease-out;
+  text-align: center; /* Center align content within modal */
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #333;
+}
+
+.modal-title {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* --- Drop Zone Styling --- */
+.drop-zone {
+  border: 3px dashed #dfe3e8;
+  border-radius: 8px;
+  padding: 40px 20px;
+  margin-bottom: 25px;
+  background-color: #f8f9fa;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  color: #6c757d;
+}
+
+.drop-zone.drag-over {
+  border-color: #007bff;
+  background-color: #e7f3ff;
+}
+
+.drop-zone p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.drop-zone strong {
+    color: #495057;
+}
+
+.upload-icon, .file-icon {
+  font-size: 3rem; /* Make icons larger */
+  display: block;
+  margin-bottom: 15px;
+  color: #adb5bd;
+  animation: bounce 1.5s infinite ease-in-out; /* Simple icon animation */
+}
+
+.browse-button {
+    margin-top: 10px;
+    padding: 8px 18px;
+}
+
+.click-or-drag-text {
+    font-size: 0.8rem;
+    color: #adb5bd;
+    margin-top: 10px;
+}
+
+
+/* --- Error Message --- */
+.modal-error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-top: -10px; /* Pull it closer to drop zone */
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+/* --- Modal Actions --- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 15px; /* Space between buttons */
+  margin-top: 30px;
+}
+
+.upload-button {
+  min-width: 120px; /* Give upload button some minimum width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-button {
+  background-color: #6c757d; /* Grey for cancel */
+  border-color: #6c757d;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+/* --- Spinner Animation --- */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Simple Fade/Slide Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Simple bounce for icons */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* --- Basic Button Styles (assuming you don't have global ones yet) --- */
+/* Add these to your form.css or a global css if you prefer */
+.button {
+  display: inline-block;
+  font-weight: 400;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem; /* Adjust padding */
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.3rem; /* Slightly more rounded */
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.button-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.button-primary:hover {
+  color: #fff;
+  background-color: #0056b3;
+  border-color: #004085;
+}
+.button-primary:disabled {
+   background-color: #007bff;
+   border-color: #007bff;
+}
+
+
+.button-secondary {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.button-secondary:hover {
+  color: #fff;
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+.button-secondary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Add other button types (danger, etc.) if needed */

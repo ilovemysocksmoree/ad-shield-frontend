@@ -1,0 +1,37 @@
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px 25px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.3s ease;
+    overflow: hidden; /* Prevent content overflow */
+  }
+  
+  .chart-card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-card-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.1rem; /* Slightly smaller title */
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .chart-card-content {
+    /* Container for the chart itself or simple stats */
+     min-height: 250px; /* Ensure cards have a minimum height */
+     display: flex;
+     justify-content: center;
+     align-items: center;
+  }
+  
+  .chart-card.simple-card .chart-card-content {
+      min-height: auto; /* No min height needed for simple stats */
+      align-items: flex-start; /* Align simple stats to top */
+      padding-top: 10px;
+  }
