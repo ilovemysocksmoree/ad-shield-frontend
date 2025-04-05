@@ -300,7 +300,7 @@ const Dashboard = () => {
         isOpen={isPcapModalOpen}
         onClose={() => setIsPcapModalOpen(false)}
         onUploadSuccess={handlePcapUploadSuccess}
-        apiUploadFunction={api.uploadPcap} // Ensure correct function name from api.js
+        apiUploadFunction={api.uploadPCAPFile} // Ensure correct function name from api.js
       />
     </div>
   );

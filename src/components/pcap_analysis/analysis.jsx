@@ -4,7 +4,7 @@ import GeneralAnalysisTab from './generalAnalysis';
 import NetworkAnalysisTab from './networkAnalysis';
 import TransportAnalysisTab from './transportAnalysis';
 import ApplicationAnalysisTab from './applicationAnalysis';
-import './analysis.css';
+import './pcap.css';
 
 const PcapAnalysisView = ({ pcapId, onBack }) => {
   const [analysisData, setAnalysisData] = useState(null);
