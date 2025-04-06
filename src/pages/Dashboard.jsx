@@ -40,25 +40,25 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-   // Fetch PCAP list function (modified slightly)
-   const fetchPcapData = useCallback(async (showLoader = false) => {
-        if (showLoader) setLoading(true); // Use main loader if requested
-        try {
-            const pcapResponse = await api.getAllPCAPMetaHistory();
-            if(pcapResponse.status === 'success') {
-                setPCAP(pcapResponse.pcaps || []);
-            } else {
-                console.error("failed to fetch pcap meta datas: ", pcapResponse.message);
-                // Avoid overwriting other errors if appending
-                setError(prev => prev ? prev + "\nFailed to load PCAP list." : "Failed to load PCAP list.");
-            }
-        } catch (err) {
-             console.error('Error fetching PCAP list:', err);
-             setError(prev => prev ? prev + `\nError fetching PCAP data: ${err.message}` : `Error fetching PCAP data: ${err.message}`);
-        } finally {
-             if (showLoader) setLoading(false);
-        }
-   }, []);
+  // Fetch PCAP list function (modified slightly)
+  const fetchPcapData = useCallback(async (showLoader = false) => {
+    if (showLoader) setLoading(true); // Use main loader if requested
+    try {
+      const pcapResponse = await api.getAllPCAPMetaHistory();
+      if (pcapResponse.status === 'success') {
+        setPCAP(pcapResponse.pcaps || []);
+      } else {
+        console.error("failed to fetch pcap meta datas: ", pcapResponse.message);
+        // Avoid overwriting other errors if appending
+        setError(prev => prev ? prev + "\nFailed to load PCAP list." : "Failed to load PCAP list.");
+      }
+    } catch (err) {
+      console.error('Error fetching PCAP list:', err);
+      setError(prev => prev ? prev + `\nError fetching PCAP data: ${err.message}` : `Error fetching PCAP data: ${err.message}`);
+    } finally {
+      if (showLoader) setLoading(false);
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -147,7 +147,7 @@ const Dashboard = () => {
     // If already viewing details, this button shouldn't be visible or should do something else
     if (selectedPcapId && activeTab === 'pcap') return;
 
-     setError(''); setSuccessMessage('');
+    setError(''); setSuccessMessage('');
     if (activeTab === 'pcap') {
       setIsPcapModalOpen(!isPcapModalOpen);
       setShowAddForm(false);
@@ -157,7 +157,7 @@ const Dashboard = () => {
     }
   };
 
-   const handlePcapUploadSuccess = async (newPcapMetaData) => { // Make async
+  const handlePcapUploadSuccess = async (newPcapMetaData) => { // Make async
     console.log('PCAP uploaded in Dashboard, new metadata:', newPcapMetaData);
     setSuccessMessage('PCAP file uploaded successfully! Refreshing list...');
     setIsPcapModalOpen(false); // Close modal
@@ -167,74 +167,124 @@ const Dashboard = () => {
   };
 
   const handlePcapRowClick = (pcapId) => {
-      console.log("Row clicked, PCAP ID:", pcapId);
-      setSelectedPcapId(pcapId);
-      window.scrollTo(0, 0);
+    console.log("Row clicked, PCAP ID:", pcapId);
+    setSelectedPcapId(pcapId);
+    window.scrollTo(0, 0);
   };
 
   // --- Handler to go back from Analysis View ---
   const handleBackToList = () => {
-      setSelectedPcapId(null);
+    setSelectedPcapId(null);
   };
 
 
   const handleLogout = () => { logout(); navigate('/login'); };
-  // Add Role/User/Service Handlers (keep existing implementations)
-  const handleAddRole = async (roleData) => { /* ... existing code ... */ };
-  const handleAddUser = async (userData) => { /* ... existing code ... */ };
-  const handleDetectService = async (scanData) => { /* ... existing code ... */ };
+
+  const handleAddRole = async (roleData) => {
+    try {
+      const response = await api.addRole(roleData);
+      if (response.status === 'success') {
+        const rolesResponse = await api.getAllRoles();
+        if (rolesResponse.status === 'success') setRoles(rolesResponse.role);
+        return response;
+      } else {
+        throw new Error(response.message || 'Failed to add role');
+      }
+    } catch (err) {
+      console.error('Add role error in Dashboard:', err);
+      throw err;
+    }
+  };
+
+  const handleAddUser = async (userData) => {
+    try {
+      const response = await api.addUser(userData);
+      if (response.status === 'success') {
+        const usersResponse = await api.getAllUsers();
+        if (usersResponse.status === 'success') setUsers(usersResponse.users);
+        return response;
+      } else {
+        throw new Error(response.message || 'Failed to add user');
+      }
+    } catch (err) {
+      console.error('Add user error in Dashboard:', err);
+      throw err;
+    }
+  };
+
+
+  const handleDetectService = async (scanData) => {
+    try {
+      const response = await api.addPortDetection(scanData);
+      if (response && response.status === 'success') {
+        setTimeout(async () => {
+          try {
+            const historyResponse = await api.getAllServiceDetectionHistory();
+            if (historyResponse.status === 'success') setServices(historyResponse.docs || []);
+          } catch (refreshErr) {
+            console.error("Error refreshing history after scan:", refreshErr);
+          }
+        }, 100);
+        return response;
+      } else {
+        throw new Error(response?.message || 'API failed to start scan.');
+      }
+    } catch (err) {
+      console.error('Error initiating service scan:', err);
+      throw err;
+    }
+  };
 
   const getActionButtonText = () => {
-      // Hide action button if viewing details
-      if (activeTab === 'pcap' && selectedPcapId) return null;
+    if (activeTab === 'pcap' && selectedPcapId) return null;
 
-      if (activeTab === 'pcap') {
-        return isPcapModalOpen ? 'Cancel Upload' : 'Upload PCAP file';
-      }
-      if (showAddForm) return 'Cancel';
-      switch (activeTab) {
-        case 'roles': return 'Add Role';
-        case 'users': return 'Add User';
-        case 'history': return 'Detect Services';
-        default: return 'Add';
-      }
+    if (activeTab === 'pcap') {
+      return isPcapModalOpen ? 'Cancel Upload' : 'Upload PCAP file';
+    }
+    if (showAddForm) return 'Cancel';
+    switch (activeTab) {
+      case 'roles': return 'Add Role';
+      case 'users': return 'Add User';
+      case 'history': return 'Detect Services';
+      default: return 'Add';
+    }
   };
 
   // --- Render Logic ---
-   const renderContent = () => {
-        if (loading) {
-            return (
-                <div className="loading-indicator-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading Dashboard...</p>
-                </div>
-            );
-        }
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="loading-indicator-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Dashboard...</p>
+        </div>
+      );
+    }
 
-        if (activeTab === 'pcap') {
-            if (selectedPcapId) {
-                return <PcapAnalysisView pcapId={selectedPcapId} onBack={handleBackToList} />;
-            } else {
-                return <PCAPTable pcapMetadata={pcaps} onRowClick={handlePcapRowClick} />;
-            }
-        }
-        
-        if (showAddForm) {
-             switch (activeTab) {
-               case 'roles': return <AddRoleForm onAdd={handleAddRole} onCancel={() => setShowAddForm(false)} />;
-               case 'users': return <AddUserForm onAdd={handleAddUser} onCancel={() => setShowAddForm(false)} roles={roles} />;
-               case 'history': return <AddServiceForm onDetect={handleDetectService} onCancel={() => setShowAddForm(false)} users={users} />;
-               default: return null;
-             }
-        } else {
-             switch (activeTab) {
-               case 'roles': return <RoleTable roles={roles} />;
-               case 'users': return <UserTable users={users} />;
-               case 'history': return <> <ServiceHistoryCharts history={services} /> <ServiceTable history={services} /> </>;
-               default: return null;
-             }
-        }
-    };
+    if (activeTab === 'pcap') {
+      if (selectedPcapId) {
+        return <PcapAnalysisView pcapId={selectedPcapId} onBack={handleBackToList} />;
+      } else {
+        return <PCAPTable pcapMetadata={pcaps} onRowClick={handlePcapRowClick} />;
+      }
+    }
+
+    if (showAddForm) {
+      switch (activeTab) {
+        case 'roles': return <AddRoleForm onAdd={handleAddRole} onCancel={() => setShowAddForm(false)} />;
+        case 'users': return <AddUserForm onAdd={handleAddUser} onCancel={() => setShowAddForm(false)} roles={roles} />;
+        case 'history': return <AddServiceForm onDetect={handleDetectService} onCancel={() => setShowAddForm(false)} users={users} />;
+        default: return null;
+      }
+    } else {
+      switch (activeTab) {
+        case 'roles': return <RoleTable roles={roles} />;
+        case 'users': return <UserTable users={users} />;
+        case 'history': return <> <ServiceHistoryCharts history={services} /> <ServiceTable history={services} /> </>;
+        default: return null;
+      }
+    }
+  };
 
 
   return (
@@ -255,19 +305,19 @@ const Dashboard = () => {
       </header>
 
       <main className="dashboard-main-content">
-         {/* Notifications */}
-         {error && (
-           <div className="notification-message error-message">
-             {error.split('\n').map((line, i) => <p key={i}>{line}</p>)}
-             <button className="notification-close-button" onClick={() => setError('')}>×</button>
-           </div>
-         )}
-         {successMessage && (
-           <div className="notification-message success-message">
-             {successMessage}
-             <button className="notification-close-button" onClick={() => setSuccessMessage('')}>×</button>
-           </div>
-         )}
+        {/* Notifications */}
+        {error && (
+          <div className="notification-message error-message">
+            {error.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+            <button className="notification-close-button" onClick={() => setError('')}>×</button>
+          </div>
+        )}
+        {successMessage && (
+          <div className="notification-message success-message">
+            {successMessage}
+            <button className="notification-close-button" onClick={() => setSuccessMessage('')}>×</button>
+          </div>
+        )}
 
         {/* Main Tabs */}
         <div className="dashboard-tabs-container">
@@ -279,19 +329,19 @@ const Dashboard = () => {
           </nav>
         </div>
 
-         {/* Action Button (Conditionally Rendered) */}
-         { getActionButtonText() && !loading && ( // Don't show button while loading or if text is null
-            <div className="dashboard-action-button-container">
-              <button onClick={handleActionButtonClick} className="button button-primary">
-                {getActionButtonText()}
-              </button>
-            </div>
-          )}
+        {/* Action Button (Conditionally Rendered) */}
+        {getActionButtonText() && !loading && ( // Don't show button while loading or if text is null
+          <div className="dashboard-action-button-container">
+            <button onClick={handleActionButtonClick} className="button button-primary">
+              {getActionButtonText()}
+            </button>
+          </div>
+        )}
 
-         {/* Main Content Area */}
-         <div className="dashboard-content-area">
-             {renderContent()}
-         </div>
+        {/* Main Content Area */}
+        <div className="dashboard-content-area">
+          {renderContent()}
+        </div>
 
       </main>
 

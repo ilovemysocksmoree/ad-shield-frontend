@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./form.css";
 import "../../pages/auth-form.css";
+import axios from 'axios';
 
 const DetectServiceForm = ({ onDetect, onCancel, users }) => {
   const [targetAddress, setTargetAddress] = useState('');
@@ -25,7 +26,6 @@ const DetectServiceForm = ({ onDetect, onCancel, users }) => {
     e.preventDefault();
     setStatusMessage({ text: '', type: '' });
 
-    // --- Validation ---
     if (!validateIp(targetAddress)) {
       setStatusMessage({ text: 'Invalid IP address or domain format.', type: 'error' });
       return;
@@ -34,56 +34,44 @@ const DetectServiceForm = ({ onDetect, onCancel, users }) => {
       setStatusMessage({ text: 'Invalid port range format (e.g., 1-1000, 80, 22,80).', type: 'error' });
       return;
     }
-    // --- Add User ID Validation ---
+
     if (!userID) {
-       setStatusMessage({ text: 'Please select a user.', type: 'error' });
-       return;
+      setStatusMessage({ text: 'Please select a user.', type: 'error' });
+      return;
     }
-    // --- End Validation ---
 
 
-    // Set loading state specifically for the API call to initiate the scan
     setIsScanning(true);
     setStatusMessage({ text: `Initiating scan for ${targetAddress} on ports ${portRange}...`, type: 'info' });
 
     try {
-      // Call the function passed from Dashboard, which calls the API
-      // `await` here waits for the API call *to start the scan* to finish
       const response = await onDetect({
-        target_address: targetAddress,
+        address: targetAddress,
         port_range: portRange,
-        user_id: userID // Pass the selected user ID
+        user_id: userID
       });
 
-      // This code runs *after* the initiation API call completes
 
-      // Check if the INITIATION was successful based on API response structure
       if (response && response.status === 'success') {
         setStatusMessage({
-            text: `Scan for ${targetAddress} started successfully. Results will appear in the history table shortly.`, // More descriptive message
-            type: 'success'
+          text: `Scan for ${targetAddress} started successfully. Results will appear in the history table shortly.`, // More descriptive message
+          type: 'success'
         });
-        // Reset form fields
         setTargetAddress('');
         setPortRange('');
         setUserID('');
-   
-        // Close the form after showing the message
+
         setTimeout(() => {
-            onCancel();
+          onCancel();
         }, 5000);
-    } else {
-        // The API call to initiate the scan failed
+      } else {
         setStatusMessage({ text: response?.description || response?.message || 'Failed to initiate scan.', type: 'error' });
       }
 
     } catch (err) {
-      // Network error or error thrown from onDetect/API call
       console.error("Detect service error:", err);
       setStatusMessage({ text: err.message || 'An error occurred while starting the scan.', type: 'error' });
     } finally {
-      // This ALWAYS runs after the try/catch finishes
-      // Stop the loading indicator because the *initiation request* is complete.
       setIsScanning(false);
     }
   };

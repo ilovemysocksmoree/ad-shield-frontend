@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = 'http://localhost:4444/api/v1';
 
 const api = {
@@ -115,31 +117,29 @@ const api = {
 
   addPortDetection: async (portData) => {
     try {
-      const respones = await fetch(`${API_URL}/scan/service`, {
-        method: 'POST',
+      const response = await axios.post(`${API_URL}/scan/service`, portData, {
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(portData)
+          'Content-Type': 'application/json'
+        }
       });
 
-      return await respones.json();
+      return response.data;
     } catch (error) {
-      console.error("Add port detection error: ", error)
-      throw error
+      console.log("error while detecting port: ", error);
+      throw error;
     }
   },
 
+
   getAllServiceDetectionHistory: async () => {
     try {
-      const response = await fetch(`${API_URL}/services`, {
-        method: 'GET',
+      const response = await axios.get(`${API_URL}/services`, {
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
-      return await response.json();
+      return response.data
     } catch (error) {
       console.error('unable to get all service detection history: ', error)
       throw error;
@@ -147,7 +147,7 @@ const api = {
   },
 
   getAllPCAPMetaHistory: async () => {
-    try{
+    try {
       const response = await fetch(`${API_URL}/pcap/metas`, {
         method: 'GET',
         headers: {
@@ -156,7 +156,7 @@ const api = {
       });
 
       return await response.json();
-    } catch(error){
+    } catch (error) {
       console.error('unable to get all pcap metadata: ', error)
       throw error;
     }
@@ -165,38 +165,36 @@ const api = {
   uploadPCAPFile: async (pcapFile) => {
     const formData = new FormData();
     formData.append('pcap_file', pcapFile);
-    try{
-      const response = await fetch(`${API_URL}/pcap/upload`, {
-        method: 'POST',
+    try {
+      const response = await axios.post(`${API_URL}/pcap/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-
-      return response.json();
-    } catch(error){
-      console.log("unable to upload pcap file: ", error)
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading file:", error);
       throw error;
     }
   },
 
   getDetailedPcapAnalysis: async (id) => {
-    try{
+    try {
       const response = await fetch(`${API_URL}/pcap/scan/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       })
-  
+
       return response.json();
-    } catch(error){
+    } catch (error) {
       console.log('unable to get single pcap file: ', error)
       throw error;
     }
   }
 
-  
+
 };
 
 export default api;
